@@ -1,0 +1,37 @@
+:root {
+  color-scheme: dark;
+  --bg: #090b10;
+  --card: #11151d;
+  --card2: #171c26;
+  --text: #f2f5f7;
+  --muted: #9ca8b8;
+  --line: #2a3240;
+  --accent: #86efac;
+  --danger: #fca5a5;
+  --warn: #fde68a;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: radial-gradient(circle at 20% 0%, #18221d 0, var(--bg) 35%); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+button, textarea, input { font: inherit; }
+button { cursor: pointer; border: 1px solid var(--line); background: #182019; color: var(--text); padding: 10px 14px; border-radius: 10px; }
+button:hover { border-color: var(--accent); }
+button:disabled { cursor: not-allowed; opacity: .55; }
+main { max-width: 1080px; margin: 0 auto; padding: 42px 20px 70px; }
+.top { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; margin-bottom: 28px; }
+h1 { margin: 0; font-size: clamp(36px, 7vw, 72px); letter-spacing: -0.05em; }
+.tag { color: var(--accent); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .12em; }
+.lead { color: var(--muted); max-width: 760px; font-size: 17px; line-height: 1.55; }
+.wallet { white-space: nowrap; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--card) 94%, transparent); padding: 18px; }
+.card h2 { margin: 0 0 12px; font-size: 18px; }
+.full { grid-column: 1 / -1; }
+pre { margin: 0; white-space: pre-wrap; word-break: break-word; color: #d4dde8; background: #0b0e13; border-radius: 10px; padding: 14px; min-height: 120px; border: 1px solid #222935; }
+textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #0b0e13; color: var(--text); margin-bottom: 10px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.status { margin-top: 12px; color: var(--warn); min-height: 24px; }
+.result { margin-top: 10px; color: var(--accent); word-break: break-word; }
+.small { color: var(--muted); font-size: 13px; line-height: 1.5; }
+a { color: var(--accent); text-decoration: none; }
+code { color: #c4f1d0; }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; } .full { grid-column: auto; } .top { flex-direction: column; } }
