@@ -92,7 +92,7 @@ class SealKernel(gl.Contract):
 
         source = '# { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }\n\nfrom genlayer import *\n\n\nclass SealGuard(gl.Contract):\n'
         source = source + '    kernel_address: str\n    generation: u64\n    genes: str\n    previous_genes: str\n    last_upgrade_reason: str\n    last_attack: str\n    history: str\n    total_recorded_checks: u64\n    blocked_recorded_checks: u64\n\n'
-        source = source + '    def __init__(self, kernel_address: str):\n        self.kernel_address = kernel_address\n        self.generation = u64(1)\n        self.genes = "BASIC_OVERRIDE"\n        self.previous_genes = ""\n        self.last_upgrade_reason = "GENESIS"\n        self.last_attack = ""\n        self.history = "g1:BASIC_OVERRIDE:GENESIS"\n        self.total_recorded_checks = u64(0)\n        self.blocked_recorded_checks = u64(0)\n        root = gl.storage.Root.get()\n        root.upgraders.get().append(Address(kernel_address))\n\n'
+        source = source + '    def __init__(self, kernel_address: str):\n        try:\n            kernel = Address(kernel_address)\n        except Exception:\n            raise gl.vm.UserError("Kernel address is invalid")\n\n        self.kernel_address = kernel.as_hex\n        self.generation = u64(1)\n        self.genes = "BASIC_OVERRIDE"\n        self.previous_genes = ""\n        self.last_upgrade_reason = "GENESIS"\n        self.last_attack = ""\n        self.history = "g1:BASIC_OVERRIDE:GENESIS"\n        self.total_recorded_checks = u64(0)\n        self.blocked_recorded_checks = u64(0)\n        root = gl.storage.Root.get()\n        root.upgraders.get().append(kernel)\n\n'
         source = source + '    def _evaluate(self, text: str) -> str:\n        t = text.lower()\n'
         source = source + normalize
         source = source + '        if "ignore previous instructions" in t or "ignore all previous instructions" in t:\n            return "BLOCK:BASIC_OVERRIDE"\n'
@@ -122,7 +122,11 @@ class SealKernel(gl.Contract):
         self._only_owner()
         if self.guard_address != "":
             raise gl.vm.UserError("Guard already registered")
-        self.guard_address = guard_address
+        try:
+            clean_guard = Address(guard_address).as_hex
+        except Exception:
+            raise gl.vm.UserError("Guard address is invalid")
+        self.guard_address = clean_guard
 
     @gl.public.write
     def evolve(self, attack_sample: str) -> str:

@@ -15,7 +15,12 @@ class SealGuard(gl.Contract):
     blocked_recorded_checks: u64
 
     def __init__(self, kernel_address: str):
-        self.kernel_address = kernel_address
+        try:
+            kernel = Address(kernel_address)
+        except Exception:
+            raise gl.vm.UserError("Kernel address is invalid")
+
+        self.kernel_address = kernel.as_hex
         self.generation = u64(1)
         self.genes = "BASIC_OVERRIDE"
         self.previous_genes = ""
@@ -26,7 +31,7 @@ class SealGuard(gl.Contract):
         self.blocked_recorded_checks = u64(0)
 
         root = gl.storage.Root.get()
-        root.upgraders.get().append(Address(kernel_address))
+        root.upgraders.get().append(kernel)
 
     def _evaluate(self, text: str) -> str:
         t = text.lower()

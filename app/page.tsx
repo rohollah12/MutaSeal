@@ -214,7 +214,7 @@ export default function Home() {
           <textarea value={sample} onChange={(e) => setSample(e.target.value)} />
           <div className="actions">
             <button onClick={testSample} disabled={busy || !ready}>Test (read)</button>
-            <button onClick={recordSample} disabled={busy || !ready || !account}>Record check (fee)</button>
+            <button onClick={recordSample} disabled={busy || !ready || !account}>Record check</button>
             <button onClick={evolve} disabled={busy || !ready || !account}>Evolve from bypass</button>
             <button onClick={rollback} disabled={busy || !ready || !account}>Rollback</button>
             <button onClick={refresh} disabled={busy}>Refresh</button>
