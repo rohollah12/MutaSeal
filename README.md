@@ -92,7 +92,7 @@ genvm-lint check contracts/seal_kernel.py
 pytest tests/direct -v
 ```
 
-`genlayer-test` controls the compatible `genlayer-py` dependency. It is intentionally not pinned separately in `requirements.txt`.
+The Python tooling follows the current GenLayer project boilerplate branches: `genlayer-py@v0.18`, `genlayer-testing-suite@v0.29`, and `genvm-linter@main`.
 
 ## Network
 

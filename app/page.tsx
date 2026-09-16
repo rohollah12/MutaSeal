@@ -89,7 +89,6 @@ export default function Home() {
     await readClient.waitForTransactionReceipt({
       hash,
       status: TransactionStatus.FINALIZED,
-      fullTransaction: false,
     });
     return hash;
   }
