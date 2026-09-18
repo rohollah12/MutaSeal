@@ -78,6 +78,17 @@ Gen4  + ROLE_MARKUP
 
 The exact mutation selected is still decided by GenLayer consensus. The frontend presets are designed to map directly to one inactive bounded gene, but reviewers can also type their own samples.
 
+### Reviewer permissions
+
+The wallet that deployed `SealKernel` is its **owner**, but reviewers do not need the owner's wallet. A reviewer can connect any Studionet wallet and call `evolve()` for a sample that currently returns `ALLOW`. If consensus selects a valid inactive gene, `SealKernel` performs the upgrade on the registered `SealGuard`.
+
+Owner-only functions are intentionally kept out of the public demo UI:
+
+- `register_guard(...)` — initial/admin setup
+- `rollback()` — recovery to the immediately previous gene set
+
+The public frontend focuses only on the reviewer path: **Test → Evolve → verify the same sample is now blocked**.
+
 ## Mutation genes
 
 `SealGuard` starts with `BASIC_OVERRIDE`. The kernel may add one of these genes at a time:
@@ -100,8 +111,10 @@ The active gene set, previous set, generation, counters, last attack and upgrade
 - non-deterministic mutation selection is isolated inside `gl.vm.run_nondet_unsafe`
 - validator logic independently re-runs the same bounded classification and must agree on the selected gene
 - contract-to-contract upgrades are emitted only after finalization
-- `evolve()` is permissionless so reviewers can test new bypasses
-- rollback is restricted to the kernel owner
+- `evolve()` is permissionless, so any reviewer can submit a currently unblocked bypass from their own wallet
+- `register_guard()` and `rollback()` are owner-only administrative actions
+- rollback is intentionally not exposed in the public frontend; it is a recovery/admin function, not part of the reviewer demo
+- direct `SealGuard.upgrade()` calls are not available to reviewers; SealGuard accepts upgrades only from its registered SealKernel
 
 ## Project layout
 

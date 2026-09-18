@@ -246,22 +246,7 @@ export default function Home() {
     }
   }
 
-  async function rollback() {
-    if (!ready || !KERNEL) return;
-    setBusy(true);
-    try {
-      const before = await readGeneration();
-      await write(KERNEL, 'rollback', []);
-      setStatus('Rollback queued. Waiting for SealGuard child transaction…');
-      const after = await waitForMutation(before);
-      await refresh();
-      setStatus(after === before ? 'Rollback still pending; check Explorer.' : `Rollback applied as generation ${after}.`);
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : String(error));
-    } finally {
-      setBusy(false);
-    }
-  }
+
 
   return (
     <main>
@@ -289,7 +274,7 @@ export default function Home() {
         </p>
         <p className="small">
           A new SealGuard starts at Generation 1. Try the Homoglyph example first to see it evolve to Generation 2.
-          After that, you can keep testing other attack types on the same contract—there is no need to deploy a new one.
+          After that, keep testing other attack types on the same contract—there is no need to deploy a new one.
         </p>
       </section>
 
@@ -340,7 +325,6 @@ export default function Home() {
             <button onClick={testSample} disabled={busy || !ready}>Test (read)</button>
             <button onClick={recordSample} disabled={busy || !ready || !account}>Record check</button>
             <button onClick={evolve} disabled={busy || !ready || !account}>Evolve from bypass</button>
-            <button onClick={rollback} disabled={busy || !ready || !account}>Rollback (owner)</button>
             <button onClick={refresh} disabled={busy}>Refresh</button>
           </div>
           {checkResult && <div className="result">Guard result: <strong>{checkResult}</strong></div>}
