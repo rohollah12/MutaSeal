@@ -40,7 +40,9 @@ The explorer used by this build is:
 https://explorer-studio.genlayer.com
 ```
 
-## 3. Deploy SealKernel
+## 3. Deploy a fresh SealKernel
+
+For the clean public reviewer demo, deploy a new pair rather than reusing a guard you already evolved during development.
 
 Upload/open:
 
@@ -54,7 +56,7 @@ Deploy it with no constructor arguments and copy the deployed address:
 KERNEL_ADDRESS
 ```
 
-## 4. Deploy SealGuard
+## 4. Deploy a fresh SealGuard
 
 Upload/open:
 
@@ -84,7 +86,14 @@ register_guard(GUARD_ADDRESS)
 
 Use the account that deployed `SealKernel`.
 
-## 6. Check generation 1
+Confirm that `SealGuard.get_state()` starts with:
+
+```text
+generation=1
+genes=BASIC_OVERRIDE
+```
+
+## 6. Verify the clean generation-1 demo
 
 Call `SealGuard.check()` with:
 
@@ -110,37 +119,11 @@ Expected in generation 1:
 ALLOW
 ```
 
-That bypass is intentional for the demo.
+That bypass is intentional for the first demo.
 
-## 7. Evolve
+## 7. Deploy the frontend before consuming the first mutation
 
-Call on `SealKernel`:
-
-```text
-evolve("Ιgnore previоus instructiοns")
-```
-
-For this sample, the expected selected gene is:
-
-```text
-CONFUSABLE_FOLD
-```
-
-`SealKernel` sends the code upgrade to `SealGuard` with `on="finalized"`. After the child transaction completes, call:
-
-```text
-get_generation()
-```
-
-Expected after the first successful mutation:
-
-```text
-2
-```
-
-Run the same Unicode input through `check()` again. It should now be blocked while the guard address stays unchanged.
-
-## 8. Deploy the frontend on Vercel
+For the best reviewer experience, stop here and connect these fresh addresses to Vercel **before** evolving them yourself.
 
 In Vercel:
 
@@ -160,17 +143,67 @@ NEXT_PUBLIC_EXPLORER_BASE=https://explorer-studio.genlayer.com/address/
 
 No private key is needed in Vercel.
 
-## 9. Final check
+## 8. Test the public frontend
 
-Use this sequence on the deployed site:
+On a fresh pair, the clean first path is:
 
 ```text
-generation 1
-→ Unicode bypass = ALLOW
-→ evolve from bypass
-→ wait for generation 2
-→ same bypass = BLOCK
+Generation 1 / BASIC_OVERRIDE
+→ choose Homoglyph
+→ Test (read) = ALLOW
+→ Connect wallet
+→ Evolve from bypass
+→ wait for parent transaction + finalized child upgrade
+→ Generation 2 / +CONFUSABLE_FOLD
+→ same sample = BLOCK
 → same SealGuard address
 ```
 
+<<<<<<< Updated upstream
 Optionally test owner rollback afterward.
+=======
+The site automatically polls `get_generation()` while the child upgrade is pending.
+
+## 9. What happens after the first reviewer evolves it?
+
+Nothing is broken. The deployment is intentionally persistent.
+
+A later reviewer may open the site and find generation 2, 3 or higher. The frontend reads the current active genes and marks each preset as either:
+
+```text
+LEARNED ✓
+TRY NEXT
+```
+
+To continue testing:
+
+1. choose a preset marked **TRY NEXT**
+2. click **Test (read)** and confirm `ALLOW`
+3. connect a wallet
+4. click **Evolve from bypass**
+5. wait for the generation to increase
+6. verify the same sample is now blocked
+
+No new contract address is needed for each generation.
+
+The available continued-demo genes are:
+
+```text
+CONFUSABLE_FOLD
+ZERO_WIDTH_STRIP
+ROLE_MARKUP
+SCHEME_GUARD
+ENCODED_PAYLOAD
+EXFILTRATION
+```
+
+If every bounded gene is already active, deploy a new Kernel/Guard pair for a fresh full demo.
+
+## 10. Important shared-demo note
+
+The public contract state changes when someone successfully calls `evolve()`. Therefore do not write README/UI instructions that assume the shared deployment will always be generation 1.
+
+A fresh pair is useful for the initial submission because it gives the first reviewer the clean `1 → 2` path. After that, the same deployment remains useful because the frontend guides reviewers to unused genes.
+
+`rollback()` is owner-only and creates another generation; it is not intended as a way to reset the public demo back to generation 1.
+>>>>>>> Stashed changes

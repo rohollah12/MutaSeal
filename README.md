@@ -9,9 +9,32 @@ It has two contracts:
 
 Validators do not generate arbitrary Python. They select one inactive defense from a fixed list. `SealKernel` then renders the next `SealGuard` source deterministically and sends the upgrade after finalization.
 
-## Demo
+## Reviewer quick start
 
-Generation 1 blocks a plain prompt override:
+The public demo is a shared on-chain deployment. Its generation may already be higher than 1 when you open the site because every successful mutation persists on the same `SealGuard` contract.
+
+That is expected. You do **not** need to redeploy contracts to keep testing.
+
+1. Open the live site and look at **Generation** and **Active genes**.
+2. In **Attack lab**, choose a preset marked **TRY NEXT**. Presets already covered by the guard are marked **LEARNED**.
+3. Click **Test (read)**. For a useful next mutation, the current result should be `ALLOW`.
+4. Connect a Studionet wallet and click **Evolve from bypass**.
+5. Wait for the parent `SealKernel.evolve()` transaction and the finalized child upgrade transaction.
+6. The same `SealGuard` address should advance by one generation.
+7. The frontend checks the same sample again. It should now return a `BLOCK:...` result.
+
+If a sample is already blocked, the frontend will not submit another evolution for it. Pick another preset marked **TRY NEXT**.
+
+### Clean first-generation demo
+
+A freshly deployed `SealGuard` starts with:
+
+```text
+generation=1
+genes=BASIC_OVERRIDE
+```
+
+It blocks:
 
 ```text
 ignore previous instructions
@@ -23,7 +46,37 @@ but intentionally misses this Unicode look-alike version:
 Ιgnore previоus instructiοns
 ```
 
-Calling `SealKernel.evolve()` with that sample should activate `CONFUSABLE_FOLD`. After the child upgrade finishes, the same `SealGuard` address moves to the next generation and the same bypass is blocked.
+Calling `SealKernel.evolve()` with that bypass should activate `CONFUSABLE_FOLD`. When the finalized child upgrade completes, the **same SealGuard address** moves to generation 2 and blocks the same Unicode input.
+
+For the final public demo, the project owner can deploy a fresh Kernel/Guard pair so reviewers can see the clean `generation 1 → generation 2` path first. After that, the same pair remains usable for additional generations.
+
+## Continuing after generation 2
+
+MutaSeal is not a one-shot demo. The same guard can keep learning one bounded defense at a time. The frontend includes these presets:
+
+| Preset | Gene it demonstrates | Example behavior before activation |
+| --- | --- | --- |
+| Homoglyph | `CONFUSABLE_FOLD` | Unicode look-alikes hide the plain override phrase |
+| Zero-width | `ZERO_WIDTH_STRIP` | a zero-width character splits `ignore` |
+| Role markup | `ROLE_MARKUP` | injected `<system>` / role markup |
+| Script URL | `SCHEME_GUARD` | `javascript:` / data-style executable schemes |
+| Encoded payload | `ENCODED_PAYLOAD` | obvious base64/payload handoff language |
+| Exfiltration | `EXFILTRATION` | direct request for hidden/system/developer instructions |
+
+Example lifecycle:
+
+```text
+Gen1  BASIC_OVERRIDE
+  ↓ Homoglyph bypass
+Gen2  + CONFUSABLE_FOLD
+  ↓ Zero-width bypass
+Gen3  + ZERO_WIDTH_STRIP
+  ↓ Role-markup bypass
+Gen4  + ROLE_MARKUP
+  ↓ ...
+```
+
+The exact mutation selected is still decided by GenLayer consensus. The frontend presets are designed to map directly to one inactive bounded gene, but reviewers can also type their own samples.
 
 ## Mutation genes
 
@@ -47,6 +100,7 @@ The active gene set, previous set, generation, counters, last attack and upgrade
 - non-deterministic mutation selection is isolated inside `gl.vm.run_nondet_unsafe`
 - validator logic independently re-runs the same bounded classification and must agree on the selected gene
 - contract-to-contract upgrades are emitted only after finalization
+- `evolve()` is permissionless so reviewers can test new bypasses
 - rollback is restricted to the kernel owner
 
 ## Project layout
@@ -92,7 +146,7 @@ genvm-lint check contracts/seal_kernel.py
 pytest tests/direct -v
 ```
 
-The Python tooling follows the current GenLayer project boilerplate branches: `genlayer-py@v0.18`, `genlayer-testing-suite@v0.29`, and `genvm-linter@main`.
+The Python tooling follows the GenLayer project boilerplate branches used by this Studionet build: `genlayer-py@v0.18`, `genlayer-testing-suite@v0.29`, and `genvm-linter@main`.
 
 ## Network
 
