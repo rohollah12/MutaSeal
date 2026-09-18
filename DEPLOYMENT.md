@@ -174,16 +174,3 @@ generation 1
 ```
 
 Optionally test owner rollback afterward.
-
-## 10. Submission values
-
-Keep these ready for the Builder Portal:
-
-```text
-GitHub URL
-Vercel URL
-SealKernel address
-SealGuard address
-```
-
-Submit MutaSeal as a **Project**. If the form accepts one primary contract address, use `SealKernel` and mention `SealGuard` in the project description.
