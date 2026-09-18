@@ -206,4 +206,3 @@ The public contract state changes when someone successfully calls `evolve()`. Th
 A fresh pair is useful for the initial submission because it gives the first reviewer the clean `1 → 2` path. After that, the same deployment remains useful because the frontend guides reviewers to unused genes.
 
 `rollback()` is owner-only and creates another generation; it is not intended as a way to reset the public demo back to generation 1.
->>>>>>> Stashed changes
