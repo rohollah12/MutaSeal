@@ -288,8 +288,8 @@ export default function Home() {
           <b> Evolve from bypass</b>. The same SealGuard address should advance one generation and block that same input.
         </p>
         <p className="small">
-          A fresh deployment starts at generation 1 with only BASIC_OVERRIDE. The clean first demo is Homoglyph → CONFUSABLE_FOLD.
-          You do not need a fresh contract to continue testing later generations.
+          A new SealGuard starts at Generation 1. Try the Homoglyph example first to see it evolve to Generation 2.
+          After that, you can keep testing other attack types on the same contract—there is no need to deploy a new one.
         </p>
       </section>
 
