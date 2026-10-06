@@ -159,10 +159,9 @@ Generation 1 / BASIC_OVERRIDE
 → same SealGuard address
 ```
 
-<<<<<<< Updated upstream
-Optionally test owner rollback afterward.
-=======
 The site automatically polls `get_generation()` while the child upgrade is pending.
+
+Optionally test owner rollback afterward.
 
 ## 9. What happens after the first reviewer evolves it?
 

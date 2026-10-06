@@ -124,6 +124,7 @@ contracts/
   seal_kernel.py
   seal_guard.py
 tests/direct/           Direct Mode tests
+tests/integration/      Studio-mode end-to-end evolution test
 .github/workflows/      lint, direct tests and frontend build
 DEPLOYMENT.md            deployment steps
 .env.example             public frontend variables
@@ -159,6 +160,14 @@ genvm-lint check contracts/seal_kernel.py
 pytest tests/direct -v
 ```
 
+The full evolution/child-upgrade path is covered separately in Studio mode:
+
+```bash
+gltest tests/integration/test_evolution.py -v -s --network localnet
+```
+
+This integration test deploys a fresh Kernel/Guard pair, verifies the Gen1 homoglyph bypass, uses deterministic mock validators to select `CONFUSABLE_FOLD`, waits for the finalized child upgrade, and then proves that the same Guard address reaches Gen2 and blocks the same sample. It requires a running GenLayer Studio/localnet and is intentionally not part of the fast GitHub Actions Direct Mode job.
+
 The Python tooling follows the GenLayer project boilerplate branches used by this Studionet build: `genlayer-py@v0.18`, `genlayer-testing-suite@v0.29`, and `genvm-linter@main`.
 
 ## Network
@@ -178,3 +187,19 @@ MutaSeal is a testnet demonstration of bounded contract evolution, not a product
 ## License
 
 MIT
+
+### Run the full evolution test from GitHub Actions
+
+If you do not have GenLayer Studio running locally, use the included **MutaSeal integration** GitHub Actions workflow. It runs the Studio-mode integration test against GenLayer Studionet.
+
+1. Open the repository on GitHub.
+2. Open **Actions**.
+3. Select **MutaSeal integration**.
+4. Click **Run workflow**.
+5. Open the `evolution-integration` job and check the final test result.
+
+The workflow runs:
+
+```bash
+gltest tests/integration/test_evolution.py -v -s --network studionet
+```

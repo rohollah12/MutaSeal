@@ -1,0 +1,39 @@
+name: MutaSeal integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'contracts/**'
+      - 'tests/integration/**'
+      - 'gltest.config.yaml'
+      - 'requirements.txt'
+      - '.github/workflows/integration.yml'
+
+jobs:
+  evolution-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run full evolution test on GenLayer Studionet
+        run: |
+          gltest tests/integration/test_evolution.py -v -s \
+            --network studionet \
+            --default-wait-interval 2000 \
+            --default-wait-retries 90

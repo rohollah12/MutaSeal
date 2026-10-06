@@ -2,3 +2,6 @@
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-q"
+markers = [
+    "integration: tests requiring GenLayer Studio (run with gltest)",
+]
